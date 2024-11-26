@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #
 # Module manifest for module 'XKCDPasswordGenerator'
 #
@@ -130,3 +131,116 @@ PrivateData = @{
 
 }
 
+=======
+<#
+.SYNOPSIS
+Generates XKCD-style memorable passwords.
+
+.DESCRIPTION
+The `Get-XKCDPassword` function generates easy-to-remember passwords consisting of random words separated by a specified delimiter.
+Each password ends with a two-digit number (from 1 to 99).
+
+.PARAMETER MinimalWordsCount
+The minimum number of words in the password. Default: 2.
+
+.PARAMETER MinimalCharactersCount
+The minimum length of the password, including delimiters and the number. Default: 10.
+
+.PARAMETER Delimiter
+The character(s) used to separate words in the password. Default: "-".
+
+.PARAMETER List
+The number of passwords to generate. Default: 1.
+
+.EXAMPLE
+# Generate a single password with default settings:
+Get-XKCDPassword
+
+.EXAMPLE
+# Generate 5 passwords with at least 3 words, a minimum length of 15 characters, and "_" as the delimiter:
+Get-XKCDPassword -MinimalWordsCount 3 -MinimalCharactersCount 15 -Delimiter "_" -List 5
+
+.EXAMPLE
+# Generate a single password with a custom delimiter and word count:
+Get-XKCDPassword -MinimalWordsCount 4 -Delimiter "."
+
+.NOTES
+Author: Your Name
+Date: November 2024
+Version: 1.0
+
+#>
+
+function Get-XKCDPassword {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$MinimalWordsCount = 2,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$MinimalCharactersCount = 10,
+
+        [Parameter(Mandatory = $false)]
+        [string]$Delimiter = "-",
+
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$List = 1
+    )
+
+    # Large offline word list for generating passwords (expandable)
+    $WordList = @(
+        "apple", "orange", "banana", "grape", "pear", "peach", "melon", "kiwi",
+        "pineapple", "mango", "cherry", "strawberry", "blueberry", "raspberry",
+        "cloud", "mountain", "river", "forest", "ocean", "desert", "valley",
+        "sunshine", "rainbow", "storm", "thunder", "lightning", "snowflake",
+        "correct", "horse", "battery", "staple", "random", "keyboard",
+        # Add more words as needed...
+        "moonlight", "starfish", "galaxy"
+    )
+
+    # Validate input parameters
+    if ($MinimalWordsCount -lt 1) {
+        throw [System.ArgumentException]::new("Error: MinimalWordsCount cannot be less than 1.")
+    }
+    if ($MinimalCharactersCount -lt 1) {
+        throw [System.ArgumentException]::new("Error: MinimalCharactersCount cannot be less than 1.")
+    }
+    if ($List -lt 1) {
+        throw [System.ArgumentException]::new("Error: List cannot be less than 1.")
+    }
+
+    # Function to generate a single password
+    function GeneratePassword {
+        do {
+            # Select random words
+            $SelectedWords = @()
+            for ($i = 1; $i -le $MinimalWordsCount; $i++) {
+                # Capitalize the first letter of each word
+                $Word = $WordList | Get-Random
+                $SelectedWords += ($Word.Substring(0, 1).ToUpper() + $Word.Substring(1))
+            }
+
+            # Form the base of the password
+            $PasswordBase = ($SelectedWords -join $Delimiter)
+            $PasswordLength = $PasswordBase.Length
+
+        } while ($PasswordLength -lt ($MinimalCharactersCount - 3)) # Account for delimiter and number length
+
+        # Add a two-digit number at the end (from 1 to 99)
+        $RandomNumber = Get-Random -Minimum 1 -Maximum 100
+        return "$PasswordBase$Delimiter$RandomNumber"
+    }
+
+    # Generate the specified number of passwords
+    try {
+        for ($i = 1; $i -le $List; $i++) {
+            Write-Output (GeneratePassword)
+        }
+    } catch {
+        Write-Error $_.Exception.Message
+    }
+}
+>>>>>>> 1bfeab6 (Initial commit: Added XKCDPasswordGenerator.psm1)
