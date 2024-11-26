@@ -23,25 +23,10 @@
 
 ## Installation
 
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/your-repo/get-xkcdpassword.git
-   ```
-
-2. Navigate to the module folder:
-   ```bash
-   cd get-xkcdpassword
-   ```
-
-3. Import the module:
-   ```powershell
-   Import-Module ./get-xkcdpassword.psd1
-   ```
-
-4. Verify installation:
-   ```powershell
-   Get-XKCDPassword -MinimalWordsCount 3 -List 5
-   ```
+Copy and Paste the following command to install this package using PowerShellGet
+```powershell
+Install-Module -Name get-xkcdpassword
+```
 
 ---
 
